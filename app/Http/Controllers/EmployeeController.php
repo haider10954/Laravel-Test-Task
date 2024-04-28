@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeRequest;
 use App\Models\Company;
 use App\Models\Employee;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -30,26 +29,16 @@ class EmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EmployeeRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'nullable|email',
-            'phone' => 'nullable',
-            'company_id' => 'required|exists:companies,id',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+        $validatedData = $request->validated();
 
         $employee = new Employee();
-        $employee->first_name = $request->first_name;
-        $employee->last_name = $request->last_name;
-        $employee->email = $request->email;
-        $employee->phone = $request->phone;
-        $employee->company_id = $request->company_id;
+        $employee->first_name = $validatedData['first_name'];
+        $employee->last_name = $validatedData['last_name'];
+        $employee->email = $validatedData['email'];
+        $employee->phone = $validatedData['phone'];
+        $employee->company_id = $validatedData['company_id'];
         $employee->save();
 
         return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
@@ -75,19 +64,8 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employee $employee)
+    public function update(EmployeeRequest $request, Employee $employee)
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'nullable|email',
-            'phone' => 'nullable',
-            'company_id' => 'required|exists:companies,id',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
 
         $employee->update([
             'first_name' => $request->first_name,

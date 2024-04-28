@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanyRequest;
 use App\Models\Company;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class CompanyController extends Controller
@@ -21,26 +20,13 @@ class CompanyController extends Controller
         return view('pages.companies.add');
     }
 
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'nullable|email',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048|dimensions:min_width=100,min_height=100',
-            'website' => 'nullable|url',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
         $company = new Company();
         $company->name = $request->name;
         $company->email = $request->email;
 
         if ($request->hasFile('logo')) {
-
-
             $extension = $request->logo->getClientOriginalExtension();
             $filename = Str::random(6) . '.' . $extension;
             $filePath = 'logos/' . '/' . $filename;
@@ -65,18 +51,8 @@ class CompanyController extends Controller
     }
 
 
-    public function update(Request $request, Company $company)
+    public function update(CompanyRequest $request, Company $company)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'nullable|email',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048|dimensions:min_width=100,min_height=100',
-            'website' => 'nullable|url',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
 
         $company->name = $request->name;
         $company->email = $request->email;
