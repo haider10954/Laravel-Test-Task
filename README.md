@@ -8,7 +8,7 @@
 </p>
 
 ## About Project
-A project in laravel with frontend (Blade Engine)
+A project in laravel with frontend (Blade Engine) and I have used FOXIA Theme
 
 ## Commands
 
